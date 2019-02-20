@@ -13,7 +13,7 @@ CONFIG_INI = "config.ini"
 
 class SnipsConfigParser(configparser.SafeConfigParser):
     def to_dict(self):
-        return {section : {option_name : option for option_name, option in self.items(section)} for section in self.sections()}
+        return {section : {option_name : option.replace('"', '') for option_name, option in self.items(section)} for section in self.sections()}
 
 
 def read_configuration_file(configuration_file):
