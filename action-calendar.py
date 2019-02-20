@@ -26,12 +26,10 @@ def read_configuration_file(configuration_file):
         return dict()
 
 def subscribe_intent_callback(hermes, intentMessage):
-    conf = read_configuration_file(CONFIG_INI)
     hermes.publish_end_session(intentMessage.session_id, calendar.getAppointment(intentMessage))
-
 
 if __name__ == "__main__":
     conf = read_configuration_file(CONFIG_INI)
-    calendar = Calendar()
+    calendar = Calendar(conf)
     with Hermes("localhost:1883") as h:
         h.subscribe_intent("daLiFe:getAppointment", subscribe_intent_callback).start()

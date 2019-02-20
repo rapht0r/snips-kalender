@@ -31,10 +31,14 @@ class Calendar:
     return dates
 
 
-  def __init__(self):
-    # Caldav url
-    self.url = "https://user:password@host:5006/share/Kalender"
-
+  def __init__(self, config):
+    try:
+        self.url = config['secret']['caldav_url']
+        self.user = config['secret']['user']
+        self.password = config['secret']['password']
+        self.verify = config['secret']['ssl_verify'] in ['True', 'true']
+    except KeyError:
+        print("Fehler der der Konfigurationsdatei")
 
   def getAppointment(self, intentMessage):
     when = datetime.today()
