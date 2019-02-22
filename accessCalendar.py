@@ -38,7 +38,7 @@ class Calendar:
         self.password = config['secret']['password']
         self.verify = config['secret']['ssl_verify'] in ['True', 'true']
     except KeyError:
-        print("Fehler der der Konfigurationsdatei")
+        print("Fehler in der Konfigurationsdatei")
 
   def getAppointment(self, intentMessage):
     when = datetime.today()
@@ -53,8 +53,12 @@ class Calendar:
     when = when.replace(tzinfo=timezone('Europe/Amsterdam'))
     until = when + timedelta(hours=23, minutes=59)
 
-    self.client = caldav.DAVClient(self.url, None, None, None, None, False)
-    self.calendars = self.client.principal().calendars()
+    try:
+      self.client = caldav.DAVClient(self.url, None, None, None, None, False)
+      self.calendars = self.client.principal().calendars()
+    except caldav.lib.error.AuthorizationError:
+      return "Die konfigurierten Anmeldedaten sind ungültig"
+ 
     if len(self.calendars) > 0:
       response = ""
       self.calendar = self.calendars[0]
