@@ -40,6 +40,9 @@ class Calendar:
     except KeyError:
         print("Fehler in der Konfigurationsdatei")
 
+  def checkDateTime(self, item):
+   return item if isinstance(item, datetime) else datetime(item.year, item.month, item.day).replace(tzinfo=timezone('Europe/Amsterdam')) 
+
   def getAppointment(self, intentMessage):
     when = datetime.today()
     if not intentMessage.slots.items():
@@ -78,10 +81,9 @@ class Calendar:
               if component.get('rrule'):
                 reoccur = component.get('rrule').to_ical().decode('utf-8')
                 for item in self.parse_recurrences(reoccur, startdt, when, until, exdate):
-                  result[item] = summary
+                  result[self.checkDateTime(item)] = summary
               else:
-#                result[datetime.combine(startdt, datetime.min.time())] = summary
-                result[startdt] = summary
+                result[self.checkDateTime(startdt)] = summary
         print(result)
         result_sorted = collections.OrderedDict(sorted(result.items()))
         for key, value in result_sorted.items():
