@@ -1,5 +1,5 @@
 # snips-kalender
-I've tested this skill using a Synology Diskstation. [This guide](https://www.synology.com/de-de/knowledgebase/DSM/tutorial/Collaboration/How_to_host_a_calendar_server_using_the_Synology_NAS) shows how to setup the CalDav server. 
+I've tested this skill using a Synology Diskstation. [This guide](https://www.synology.com/de-de/knowledgebase/DSM/tutorial/Collaboration/How_to_host_a_calendar_server_using_the_Synology_NAS) shows how to setup the CalDav server. The Synology [Calendar App](https://www.synology.com/de-de/dsm/feature/calendar) may also work, but wasn't tested by me.
 
 ## Features
 This skill is able to read out appointments from a caldav server using a specified date. Examples:
