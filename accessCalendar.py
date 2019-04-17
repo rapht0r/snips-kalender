@@ -25,12 +25,14 @@ class Calendar:
 
   def getAppointment(self, intentMessage):
     when = datetime.today()
-    if not intentMessage.slots.items():
+    if not intentMessage.slots or not intentMessage.slots.items():
       return "Ich habe das Datum leider nicht verstanden"
 
     for (slot_name, slot) in intentMessage.slots.items():
       if slot_name not in ['date']:
         return "Unbekannter Slotname " + slot_name
+      if not isinstance(slot[0].slot_value.value, InstantTimeValue):
+        return "Die Slotart wird nicht unterstützt"
       else:
         when = datetime.strptime(slot[0].slot_value.value.value[:-7], '%Y-%m-%d %H:%M:%S')
     when = when.replace(tzinfo=timezone('Europe/Amsterdam'))
