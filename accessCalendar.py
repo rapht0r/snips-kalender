@@ -39,7 +39,7 @@ class Calendar:
     until = when + timedelta(hours=23, minutes=59)
 
     try:
-      client = caldav.DAVClient(self.url, None, None, None, None, self.verify)
+      client = caldav.DAVClient(self.url, None, self.user, self.password, None, self.verify)
       calendars = client.principal().calendars()
     except caldav.lib.error.AuthorizationError:
       return "Die konfigurierten Anmeldedaten sind ungültig"
