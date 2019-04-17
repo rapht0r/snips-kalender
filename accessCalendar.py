@@ -11,26 +11,6 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 import icalendar
 
 class Calendar:
-  def parse_recurrences(recur_rule, start, exclusions):
-    """ Find all reoccuring events """
-    rules = rruleset()
-    first_rule = rrulestr(recur_rule, dtstart=start)
-    rules.rrule(first_rule)
-    if not isinstance(exclusions, list):
-        exclusions = [exclusions]
-        for xdate in exclusions:
-            try:
-                rules.exdate(xdate.dts[0].dt)
-            except AttributeError:
-                pass
-    now = datetime.now(timezone.utc)
-    this_year = now + timedelta(days=60)
-    dates = []
-    for rule in rules.between(now, this_year):
-        dates.append(rule.strftime("%D %H:%M UTC "))
-    return dates
-
-
   def __init__(self, config):
     try:
         self.url = config['secret']['caldav_url']
