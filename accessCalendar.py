@@ -1,4 +1,5 @@
-from datetime import datetime, timedelta, timezone
+from hermes_python.ontology.dialogue import InstantTimeValue
+from datetime import date, datetime, timedelta, timezone
 import caldav
 from caldav.elements import dav, cdav
 from dateutil.rrule import *
@@ -51,6 +52,7 @@ class Calendar:
       try: 
         events = calendar.date_search(when, until)
         result = {}
+        resultNoTime = {}
         for event in events:
           event.load()
           print ("Found ", str(event))
@@ -59,20 +61,36 @@ class Calendar:
             if component.name == "VEVENT":
               summary = component.get('summary')
               startdt = component.get('dtstart').dt
+              if component.get('dtend') is not None:
+                enddt = component.get('dtend').dt
+              else:
+                enddt = until 
               exdate = component.get('exdate')
               if component.get('rrule'):
                 reoccur = component.get('rrule').to_ical().decode('utf-8')
                 for item in self.parse_recurrences(reoccur, startdt, when, until, exdate):
-                  result[self.checkDateTime(item)] = summary
+                  print("{0}: {1} ".format(item.strftime("%H:%M Uhr"), summary))
+                  self.storeItem(result, resultNoTime, item, enddt, summary, when)
               else:
-                result[self.checkDateTime(startdt)] = summary
+                print("{0}: {1}".format(startdt.strftime("%H:%M Uhr"), summary))
+                self.storeItem(result, resultNoTime, startdt, enddt, summary, when)
+        print(resultNoTime)
         print(result)
-        result_sorted = collections.OrderedDict(sorted(result.items()))
-        for key, value in result_sorted.items():
-            response += "{0}: {1} ".format(key.strftime("%H:%M Uhr"), value)
+        for key, value in resultNoTime.items():
+          response += "{0} ".format(value)
+        for key, value in collections.OrderedDict(sorted(result.items())).items():
+          response += "{0}: {1} ".format(key.strftime("%H:%M Uhr"), value)
+        print(response)
         return response
       except caldav.lib.error.NotFoundError:
         return "Keine Termine im Kalender gefunden"
+
+  def storeItem(self, result, resultNoTime, startdt, enddt, summary, when):
+    if type(startdt) is date:
+      if enddt > when.date():
+        resultNoTime[startdt] = summary
+    else:
+      result[startdt] = summary
 
   def parse_recurrences(self, recur_rule, startdt, start, end, exclusions):
     """ Find all reoccuring events """
