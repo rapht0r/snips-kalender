@@ -86,8 +86,4 @@ class Calendar:
                 rules.exdate(xdate.dts[0].dt)
             except AttributeError:
                 pass
-    dates = []
-#    for rule in rules.between(start.replace(tzinfo=timezone('Europe/Amsterdam')), end.replace(tzinfo=timezone('Europe/Amsterdam'))):
-    for rule in rules.between(start - timedelta(minutes=1), end):
-        dates.append(rule)
-    return dates
+    return rules.between(start - timedelta(minutes=1), end)
