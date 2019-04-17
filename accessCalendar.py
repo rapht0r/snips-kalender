@@ -39,17 +39,17 @@ class Calendar:
     until = when + timedelta(hours=23, minutes=59)
 
     try:
-      self.client = caldav.DAVClient(self.url, None, None, None, None, False)
-      self.calendars = self.client.principal().calendars()
+      client = caldav.DAVClient(self.url, None, None, None, None, self.verify)
+      calendars = client.principal().calendars()
     except caldav.lib.error.AuthorizationError:
       return "Die konfigurierten Anmeldedaten sind ungültig"
  
-    if len(self.calendars) > 0:
+    if len(calendars) > 0:
       response = ""
-      self.calendar = self.calendars[0]
-      print("Using calendar ", self.calendar, " looking for events in range " + when.strftime("%m/%d/%Y, %H:%M:%S") + " and " + until.strftime("%m/%d/%Y, %H:%M:%S"))
+      calendar = calendars[0]
+      print("Using calendar ", calendar, " looking for events in range " + when.strftime("%m/%d/%Y, %H:%M:%S") + " and " + until.strftime("%m/%d/%Y, %H:%M:%S"))
       try: 
-        events = self.calendar.date_search(when, until)
+        events = calendar.date_search(when, until)
         result = {}
         for event in events:
           event.load()
