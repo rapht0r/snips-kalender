@@ -6,6 +6,7 @@ from dateutil.rrule import *
 from pytz import timezone
 import collections
 
+import requests
 import urllib.request
 import urllib3
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -43,7 +44,9 @@ class Calendar:
       client = caldav.DAVClient(self.url, None, self.user, self.password, None, self.verify)
       calendars = client.principal().calendars()
     except caldav.lib.error.AuthorizationError:
-      return "Die konfigurierten Anmeldedaten sind ungültig"
+      return "Die konfigurierten Anmeldedaten sind ungültig."
+    except requests.exceptions.ConnectionError:
+      return "Die Verbindung zum Server konnte nicht hergestellt werden."
  
     if len(calendars) > 0:
       response = ""
@@ -84,6 +87,8 @@ class Calendar:
         return response
       except caldav.lib.error.NotFoundError:
         return "Keine Termine im Kalender gefunden"
+    else:
+      return "Ich habe keinen Kalender gefunden." 
 
   def storeItem(self, result, resultNoTime, startdt, enddt, summary, when):
     if type(startdt) is date:
