@@ -32,4 +32,4 @@ if __name__ == "__main__":
     conf = read_configuration_file(CONFIG_INI)
     calendar = Calendar(conf)
     with Hermes("localhost:1883") as h:
-        h.subscribe_intent("daLiFe:getAppointment", subscribe_intent_callback).start()
+        h.subscribe_intent("raph:getAppointment", subscribe_intent_callback).start()
