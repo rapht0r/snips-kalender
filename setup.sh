@@ -22,7 +22,7 @@ then
 
     # Activate the virtual environment and install requirements.
     . $VENV/bin/activate
-    pip3 install -q -r requirements.txt
+    pip3 install -q -r requirements.txt --default-timeout=1000
 
 else
     >&2 echo "Cannot find Python 3. Please install it."
